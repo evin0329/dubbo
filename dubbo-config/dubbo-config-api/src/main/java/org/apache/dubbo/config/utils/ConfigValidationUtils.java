@@ -298,6 +298,7 @@ public class ConfigValidationUtils {
     }
 
     /**
+     * 本地模拟操作的合法性检查和设置。操作可以是带有简单操作的字符串，也可以是其 {@link Class} 实现特定功能的类名
      * Legitimacy check and setup of local simulated operations. The operations can be a string with Simple operation or
      * a classname whose {@link Class} implements a particular function
      *
@@ -314,6 +315,7 @@ public class ConfigValidationUtils {
         if (normalizedMock.startsWith(RETURN_PREFIX)) {
             normalizedMock = normalizedMock.substring(RETURN_PREFIX.length()).trim();
             try {
+                // 检查mock值是否合法，如果不合法则抛出异常
                 //Check whether the mock value is legal, if it is illegal, throw exception
                 MockInvoker.parseMockValue(normalizedMock);
             } catch (Exception e) {
@@ -324,6 +326,7 @@ public class ConfigValidationUtils {
             normalizedMock = normalizedMock.substring(THROW_PREFIX.length()).trim();
             if (ConfigUtils.isNotEmpty(normalizedMock)) {
                 try {
+                    // 检查模拟值是否合法
                     //Check whether the mock value is legal
                     MockInvoker.getThrowable(normalizedMock);
                 } catch (Exception e) {

@@ -203,6 +203,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             throw new IllegalStateException("The invoker of ReferenceConfig(" + url + ") has already destroyed!");
         }
         if (ref == null) {
+            // 初始化
             init();
         }
         return ref;
@@ -310,6 +311,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
         serviceMetadata.getAttachments().putAll(map);
 
+        // 创建代理
         ref = createProxy(map);
 
         serviceMetadata.setTarget(ref);
@@ -433,6 +435,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
     }
 
     /**
+     * 这个方法应该在创建这个类的实例之后立即调用，在使用其他配置模块中的任何属性之前。检查每个配置模块是否正确创建，并在必要时覆盖它们的属性。
      * This method should be called right after the creation of this class's instance, before any property in other config modules is used.
      * Check each config modules are created properly and override their properties if necessary.
      */
@@ -441,10 +444,10 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             throw new IllegalStateException("<dubbo:reference interface=\"\" /> interface not allow null!");
         }
         completeCompoundConfigs(consumer);
-        // get consumer's global configuration
+        // get consumer's global configuration 获取消费者的全局配置
         checkDefault();
 
-        // init some null configuration.
+        // init some null configuration. 初始化一些空配置。
         List<ConfigInitializer> configInitializers = ExtensionLoader.getExtensionLoader(ConfigInitializer.class)
                 .getActivateExtension(URL.valueOf("configInitializer://"), (String[]) null);
         configInitializers.forEach(e -> e.initReferConfig(this));
@@ -472,6 +475,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
         ServiceRepository repository = ApplicationModel.getServiceRepository();
         ServiceDescriptor serviceDescriptor = repository.registerService(interfaceClass);
+        // 注册消费者
         repository.registerConsumer(
                 serviceMetadata.getServiceKey(),
                 serviceDescriptor,

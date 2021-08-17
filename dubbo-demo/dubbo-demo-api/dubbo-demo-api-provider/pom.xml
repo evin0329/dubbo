@@ -51,7 +51,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>
-            <artifactId>dubbo-registry-zookeeper</artifactId>
+            <artifactId>dubbo-registry-nacos</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.dubbo</groupId>

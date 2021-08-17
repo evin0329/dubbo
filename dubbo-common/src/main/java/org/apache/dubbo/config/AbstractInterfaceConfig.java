@@ -214,6 +214,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
     }
 
     /**
+     * 检查远程服务接口和方法是否符合Dubbo的要求，主要检查配置文件中配置的方法是否包含在远程服务的接口中
      * Check whether the remote service interface and the methods meet with Dubbo's requirements.it mainly check, if the
      * methods configured in the configuration file are included in the interface of remote service
      *
@@ -228,7 +229,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
         if (!interfaceClass.isInterface()) {
             throw new IllegalStateException("The interface class " + interfaceClass + " is not a interface!");
         }
-        // check if methods exist in the remote service interface
+        // check if methods exist in the remote service interface  检查远程服务接口中是否存在方法
         if (CollectionUtils.isNotEmpty(methods)) {
             for (MethodConfig methodBean : methods) {
                 methodBean.setService(interfaceClass.getName());

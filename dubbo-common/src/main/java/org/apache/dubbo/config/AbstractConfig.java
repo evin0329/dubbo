@@ -474,6 +474,7 @@ public abstract class AbstractConfig implements Serializable {
             // loop methods, get override value and set the new value back to method
             Method[] methods = getClass().getMethods();
             for (Method method : methods) {
+                // set前缀方法
                 if (MethodUtils.isSetter(method)) {
                     try {
                         String value = StringUtils.trim(compositeConfiguration.getString(extractPropertyName(getClass(), method)));

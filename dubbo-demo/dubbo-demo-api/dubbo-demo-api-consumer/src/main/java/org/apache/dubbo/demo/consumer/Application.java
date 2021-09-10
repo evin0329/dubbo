@@ -64,6 +64,7 @@ public class Application {
         reference.setApplication(new ApplicationConfig("dubbo-demo-api-consumer"));
         reference.setRegistry(new RegistryConfig("nacos://127.0.0.1:8848"));
         reference.setInterface(DemoService.class);
+        reference.setCheck(false);
         DemoService service = reference.get();
         String message = service.sayHello("dubbo");
         System.out.println(message);

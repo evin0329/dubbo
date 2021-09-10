@@ -330,14 +330,17 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
     @SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
     private T createProxy(Map<String, String> map) {
+        // 是否参考jvm引用
         if (shouldJvmRefer(map)) {
             URL url = new URL(LOCAL_PROTOCOL, LOCALHOST_VALUE, 0, interfaceClass.getName()).addParameters(map);
             invoker = REF_PROTOCOL.refer(interfaceClass, url);
             if (logger.isInfoEnabled()) {
                 logger.info("Using injvm service " + interfaceClass.getName());
             }
-        } else {
+        }
+        else {
             urls.clear();
+            // 用户指定的 URL，可以是点对点地址，也可以是注册中心的地址
             if (url != null && url.length() > 0) { // user specified URL, could be peer-to-peer address, or register center's address.
                 String[] us = SEMICOLON_SPLIT_PATTERN.split(url);
                 if (us != null && us.length > 0) {
@@ -353,8 +356,10 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
                         }
                     }
                 }
-            } else { // assemble URL from register center's configuration
-                // if protocols not injvm checkRegistry
+            }
+            // assemble URL from register center's configuration 从注册中心的配置中组装 URL
+            else {
+                // 如果协议不是 injvm checkRegistry
                 if (!LOCAL_PROTOCOL.equalsIgnoreCase(getProtocol())) {
                     checkRegistry();
                     List<URL> us = ConfigValidationUtils.loadRegistries(this, false);
@@ -378,16 +383,18 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
             if (urls.size() == 1) {
                 invoker = REF_PROTOCOL.refer(interfaceClass, urls.get(0));
-            } else {
+            }
+            else {
                 List<Invoker<?>> invokers = new ArrayList<Invoker<?>>();
                 URL registryURL = null;
                 for (URL url : urls) {
+                    // 对于多注册表场景，不检查每个referInvoker 是否可用。因为此调用程序可能稍后可用。
                     // For multi-registry scenarios, it is not checked whether each referInvoker is available.
                     // Because this invoker may become available later.
                     invokers.add(REF_PROTOCOL.refer(interfaceClass, url));
 
                     if (UrlUtils.isRegistry(url)) {
-                        registryURL = url; // use last registry url
+                        registryURL = url; // use last registry url 使用最后一个注册网址
                     }
                 }
 
@@ -505,7 +512,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
             if (url != null && url.length() > 0) {
                 isJvmRefer = false;
             } else {
-                // by default, reference local service if there is
+                // by default, reference local service if there is 默认情况下，如果有，则引用本地服务
                 isJvmRefer = InjvmProtocol.getInjvmProtocol().isInjvmRefer(tmpUrl);
             }
         } else {

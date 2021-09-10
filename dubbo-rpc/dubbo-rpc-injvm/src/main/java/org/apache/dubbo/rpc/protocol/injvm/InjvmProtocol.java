@@ -103,23 +103,25 @@ public class InjvmProtocol extends AbstractProtocol implements Protocol{
     public boolean isInjvmRefer(URL url) {
         String scope = url.getParameter(SCOPE_KEY);
         // Since injvm protocol is configured explicitly, we don't need to set any extra flag, use normal refer process.
+        // 由于injvm协议是明确配置的，我们不需要设置任何额外的标志，使用正常的引用过程。
         if (SCOPE_LOCAL.equals(scope) || (url.getParameter(LOCAL_PROTOCOL, false))) {
             // if it's declared as local reference
             // 'scope=local' is equivalent to 'injvm=true', injvm will be deprecated in the future release
+            // 如果它被声明为本地引用 'scope=local' 等价于 'injvm=true'，injvm 将在未来版本中被弃用
             return true;
         } else if (SCOPE_REMOTE.equals(scope)) {
-            // it's declared as remote reference
+            // it's declared as remote reference 它被声明为远程引用
             return false;
         } else if (url.getParameter(GENERIC_KEY, false)) {
-            // generic invocation is not local reference
+            // generic invocation is not local reference 泛型调用不是本地引用
             return false;
         } else if (getExporter(exporterMap, url) != null) {
             // Broadcast cluster means that multiple machines will be called,
-            // which is not converted to injvm protocol at this time.
+            // which is not converted to injvm protocol at this time. 广播集群是指会调用多台机器, 此时不转换为injvm协议。
             if (BROADCAST_CLUSTER.equalsIgnoreCase(url.getParameter(CLUSTER_KEY))) {
                 return false;
             }
-            // by default, go through local reference if there's the service exposed locally
+            // by default, go through local reference if there's the service exposed locally 默认情况下，如果有本地公开的服务，则通过本地引用
             return true;
         } else {
             return false;

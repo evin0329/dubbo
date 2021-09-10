@@ -46,6 +46,7 @@ public class MigrationRuleHandler<T> {
 
         migrationInvoker.setMigrationRule(rule);
 
+        // 是迁移多注册中心
         if (migrationInvoker.isMigrationMultiRegistry()) {
             if (migrationInvoker.isServiceInvoker()) {
                 migrationInvoker.refreshServiceDiscoveryInvoker();

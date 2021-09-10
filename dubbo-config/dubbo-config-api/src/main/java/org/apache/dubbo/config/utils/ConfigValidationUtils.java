@@ -184,7 +184,7 @@ public class ConfigValidationUtils {
 
 
     public static List<URL> loadRegistries(AbstractInterfaceConfig interfaceConfig, boolean provider) {
-        // check && override if necessary
+        // check && override if necessary 必要时覆盖
         List<URL> registryList = new ArrayList<URL>();
         ApplicationConfig application = interfaceConfig.getApplication();
         List<RegistryConfig> registries = interfaceConfig.getRegistries();
@@ -194,6 +194,7 @@ public class ConfigValidationUtils {
                 if (StringUtils.isEmpty(address)) {
                     address = ANYHOST_VALUE;
                 }
+                // 如果注册中心地址可用
                 if (!RegistryConfig.NO_AVAILABLE.equalsIgnoreCase(address)) {
                     Map<String, String> map = new HashMap<String, String>();
                     AbstractConfig.appendParameters(map, application);
@@ -203,9 +204,11 @@ public class ConfigValidationUtils {
                     if (!map.containsKey(PROTOCOL_KEY)) {
                         map.put(PROTOCOL_KEY, DUBBO_PROTOCOL);
                     }
+                    // 解析注册中心url
                     List<URL> urls = UrlUtils.parseURLs(address, map);
 
                     if (urls == null) {
+                        // 解析失败
                         throw new IllegalStateException(String.format("url should not be null,address is %s", address));
                     }
                     for (URL url : urls) {
@@ -230,6 +233,7 @@ public class ConfigValidationUtils {
         registryList.forEach(registryURL -> {
             result.add(registryURL);
             if (provider) {
+                // 对于注册启用服务发现，自动注册接口兼容地址。
                 // for registries enabled service discovery, automatically register interface compatible addresses.
                 if (SERVICE_REGISTRY_PROTOCOL.equals(registryURL.getProtocol())
                         && registryURL.getParameter(REGISTRY_PUBLISH_INTERFACE_KEY, ConfigurationUtils.getDynamicGlobalConfiguration().getBoolean(DUBBO_PUBLISH_INTERFACE_DEFAULT_KEY, false))

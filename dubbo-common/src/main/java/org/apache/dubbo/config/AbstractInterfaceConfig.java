@@ -191,6 +191,7 @@ public abstract class AbstractInterfaceConfig extends AbstractMethodConfig {
     }
 
     /**
+     * 检查注册表配置是否存在，然后将其转换为 {@link RegistryConfig}
      * Check whether the registry config is exists, and then conversion it to {@link RegistryConfig}
      */
     public void checkRegistry() {

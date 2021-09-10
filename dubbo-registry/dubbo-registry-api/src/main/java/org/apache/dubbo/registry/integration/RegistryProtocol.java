@@ -458,6 +458,7 @@ public class RegistryProtocol implements Protocol {
     @Override
     @SuppressWarnings("unchecked")
     public <T> Invoker<T> refer(Class<T> type, URL url) throws RpcException {
+        // 获取注册中心对应协议url
         url = getRegistryUrl(url);
         Registry registry = getRegistry(url);
         if (RegistryService.class.equals(type)) {
@@ -489,7 +490,7 @@ public class RegistryProtocol implements Protocol {
     }
 
     protected <T> Invoker<T> interceptInvoker(ClusterInvoker<T> invoker, URL url, URL consumerUrl) {
-        List<RegistryProtocolListener> listeners = findRegistryProtocolListeners(url);
+        List<RegistryProtocolListener> listeners = findRegistryProtocolListeners(url);  // 查找注册协议监听器
         if (CollectionUtils.isEmpty(listeners)) {
             return invoker;
         }
@@ -517,8 +518,10 @@ public class RegistryProtocol implements Protocol {
         // all attributes of REFER_KEY
         Map<String, String> parameters = new HashMap<String, String>(directory.getConsumerUrl().getParameters());
         URL urlToRegistry = new URL(CONSUMER_PROTOCOL, parameters.remove(REGISTER_IP_KEY), 0, type.getName(), parameters);
+        // 是否应该注册
         if (directory.isShouldRegister()) {
             directory.setRegisteredConsumerUrl(urlToRegistry);
+            //
             registry.register(directory.getRegisteredConsumerUrl());
         }
         directory.buildRouterChain(urlToRegistry);

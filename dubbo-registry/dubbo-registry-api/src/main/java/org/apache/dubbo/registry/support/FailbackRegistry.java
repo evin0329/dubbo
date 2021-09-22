@@ -199,12 +199,14 @@ public abstract class FailbackRegistry extends AbstractRegistry {
             return;
         }
         super.register(url);
-        removeFailedRegistered(url);
-        removeFailedUnregistered(url);
+        removeFailedRegistered(url);        // 删除失败注册
+        removeFailedUnregistered(url);      // 删除失败未注册
         try {
             // Sending a registration request to the server side
+            // 向服务器端发送注册请求
             doRegister(url);
         } catch (Exception e) {
+            // TODO: 2021/9/15 hepeng 这个catch块什么条件能进来呢？
             Throwable t = e;
 
             // If the startup detection is opened, the Exception is thrown directly.
@@ -296,6 +298,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
         removeFailedSubscribed(url, listener);
         try {
             // Sending a subscription request to the server side
+            // 向服务器端发送订阅请求
             doSubscribe(url, listener);
         } catch (Exception e) {
             Throwable t = e;

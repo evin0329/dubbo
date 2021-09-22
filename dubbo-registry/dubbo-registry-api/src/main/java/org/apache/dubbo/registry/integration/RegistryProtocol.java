@@ -521,7 +521,7 @@ public class RegistryProtocol implements Protocol {
         // 是否应该注册
         if (directory.isShouldRegister()) {
             directory.setRegisteredConsumerUrl(urlToRegistry);
-            //
+            // 注册服务
             registry.register(directory.getRegisteredConsumerUrl());
         }
         directory.buildRouterChain(urlToRegistry);

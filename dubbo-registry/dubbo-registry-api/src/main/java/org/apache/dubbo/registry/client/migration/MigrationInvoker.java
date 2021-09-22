@@ -325,6 +325,7 @@ public class MigrationInvoker<T> implements MigrationClusterInvoker<T> {
     @Override
     public synchronized void refreshInterfaceInvoker() {
         clearListener(invoker);
+        // 需要刷新
         if (needRefresh(invoker)) {
             // FIXME invoker.destroy();
             if (logger.isDebugEnabled()) {

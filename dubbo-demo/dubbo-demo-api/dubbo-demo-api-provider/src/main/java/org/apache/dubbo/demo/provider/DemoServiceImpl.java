@@ -17,6 +17,7 @@
 package org.apache.dubbo.demo.provider;
 
 import org.apache.dubbo.demo.DemoService;
+import org.apache.dubbo.demo.MyEx;
 import org.apache.dubbo.rpc.RpcContext;
 
 import org.slf4j.Logger;
@@ -30,6 +31,9 @@ public class DemoServiceImpl implements DemoService {
     @Override
     public String sayHello(String name) {
         logger.info("Hello " + name + ", request from consumer: " + RpcContext.getContext().getRemoteAddress());
+        if(name == null){
+            throw new MyEx("test");
+        }
         return "Hello " + name + ", response from provider: " + RpcContext.getContext().getLocalAddress();
     }
 

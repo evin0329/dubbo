@@ -17,6 +17,7 @@
 package org.apache.dubbo.demo.provider;
 
 import org.apache.dubbo.config.ApplicationConfig;
+import org.apache.dubbo.config.ProviderConfig;
 import org.apache.dubbo.config.RegistryConfig;
 import org.apache.dubbo.config.ServiceConfig;
 import org.apache.dubbo.config.bootstrap.DubboBootstrap;
@@ -56,6 +57,9 @@ public class Application {
         service.setRef(new DemoServiceImpl());
         service.setApplication(new ApplicationConfig("dubbo-demo-api-provider"));
         service.setRegistry(new RegistryConfig("nacos://127.0.0.1:8848"));
+        ProviderConfig provider = new ProviderConfig();
+        provider.setPort(32431);
+        service.setProvider(provider);
         service.export();
 
         System.out.println("dubbo service started");

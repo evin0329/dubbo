@@ -66,7 +66,7 @@ public class Application {
         reference.setInterface(DemoService.class);
         reference.setCheck(false);
         DemoService service = reference.get();
-        String message = service.sayHello(null);
+        String message = service.sayHello("null");
         System.out.println(message);
     }
 }

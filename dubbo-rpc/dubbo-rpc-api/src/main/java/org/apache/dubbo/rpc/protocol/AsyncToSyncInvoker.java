@@ -30,6 +30,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 此类将作为包装器包装在每个协议调用程序之外。
  * This class will work as a wrapper wrapping outside of each protocol invoker.
  *
  * @param <T>
@@ -49,6 +50,7 @@ public class AsyncToSyncInvoker<T> implements Invoker<T> {
 
     @Override
     public Result invoke(Invocation invocation) throws RpcException {
+        // 远程调用
         Result asyncResult = invoker.invoke(invocation);
 
         try {

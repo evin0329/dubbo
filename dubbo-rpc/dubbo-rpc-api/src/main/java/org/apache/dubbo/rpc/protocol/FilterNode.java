@@ -78,7 +78,9 @@ class FilterNode<T> implements Invoker<T>{
         } finally {
 
         }
-        return asyncResult.whenCompleteWithContext((r, t) -> {
+        // 当完成上下文时
+        return asyncResult.whenCompleteWithContext((r /*result*/, t /*Throwable*/) -> {
+            // 调用监听器事件
             if (filter instanceof ListenableFilter) {
                 ListenableFilter listenableFilter = ((ListenableFilter) filter);
                 Filter.Listener listener = listenableFilter.listener(invocation);
@@ -95,9 +97,12 @@ class FilterNode<T> implements Invoker<T>{
                 }
             } else if (filter instanceof Filter.Listener) {
                 Filter.Listener listener = (Filter.Listener) filter;
+                // 无异常成功
                 if (t == null) {
                     listener.onResponse(r, invoker, invocation);
-                } else {
+                }
+                // 有异常失败
+                else {
                     listener.onError(t, invoker, invocation);
                 }
             }

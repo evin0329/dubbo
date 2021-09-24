@@ -72,6 +72,7 @@ public class ApplicationModel {
     }
 
     public static ConsumerModel getConsumerModel(String serviceKey) {
+        // 查看引用的服务
         return getServiceRepository().lookupReferredService(serviceKey);
     }
 

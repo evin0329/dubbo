@@ -47,6 +47,7 @@ public class FutureFilter implements Filter, Filter.Listener {
     @Override
     public Result invoke(final Invoker<?> invoker, final Invocation invocation) throws RpcException {
         fireInvokeCallback(invoker, invocation);
+        // 需要在调用前配置是否有返回值，以帮助调用者判断是否需要返回future
         // need to configure if there's return value before the invocation in order to help invoker to judge if it's
         // necessary to return future.
         return invoker.invoke(invocation);
@@ -54,9 +55,12 @@ public class FutureFilter implements Filter, Filter.Listener {
 
     @Override
     public void onResponse(Result result, Invoker<?> invoker, Invocation invocation) {
+        // 返回结果是异常
         if (result.hasException()) {
+            // 异常回调
             fireThrowCallback(invoker, invocation, result.getException());
         } else {
+            // 成功结果回调
             fireReturnCallback(invoker, invocation, result.getValue());
         }
     }

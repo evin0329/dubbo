@@ -86,9 +86,9 @@ public class MonitorFilter implements Filter, Filter.Listener {
         if (invoker.getUrl().hasParameter(MONITOR_KEY)) {
             invocation.put(MONITOR_FILTER_START_TIME, System.currentTimeMillis());
             invocation.put(MONITOR_REMOTE_HOST_STORE, RpcContext.getContext().getRemoteHost());
-            getConcurrent(invoker, invocation).incrementAndGet(); // count up
+            getConcurrent(invoker, invocation).incrementAndGet(); // count up 计数
         }
-        return invoker.invoke(invocation); // proceed invocation chain
+        return invoker.invoke(invocation); // proceed invocation chain 继续调用链
     }
 
     // concurrent counter

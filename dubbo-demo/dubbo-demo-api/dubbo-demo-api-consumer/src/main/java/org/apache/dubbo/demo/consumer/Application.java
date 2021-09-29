@@ -65,8 +65,24 @@ public class Application {
         reference.setRegistry(new RegistryConfig("nacos://127.0.0.1:8848"));
         reference.setInterface(DemoService.class);
         reference.setCheck(false);
+//        reference.setMock("force:org.apache.dubbo.demo.consumer.DemoServiceMock");
+        reference.setMock("fail:org.apache.dubbo.demo.consumer.DemoServiceMock");
         DemoService service = reference.get();
         String message = service.sayHello("null");
         System.out.println(message);
     }
+    /**
+     * Dubbo 的 mock 的策略总共分为两大类：
+     * 一是当服务调用失败时，去进行 mock 调用；
+     * 二是绕过服务调用，直接进行 mock 调用。
+     *
+     * 而具体的 mock 调用策略又分别 4 种：
+     * 1、返回 mock 数据
+     * 2、抛出自定义异常
+     * 3、执行默认的 Mock 实现类
+     * 4、执行指定的 Mock 实现类
+     * ————————————————
+     * 版权声明：本文为CSDN博主「nimo10050」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+     * 原文链接：https://blog.csdn.net/cnm10050/article/details/109709478
+     */
 }

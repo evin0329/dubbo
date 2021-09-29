@@ -89,25 +89,26 @@ public class MockClusterInvoker<T> implements ClusterInvoker<T> {
 
         String value = getUrl().getMethodParameter(invocation.getMethodName(), MOCK_KEY, Boolean.FALSE.toString()).trim();
         if (value.length() == 0 || "false".equalsIgnoreCase(value)) {
-            //no mock
+            //no mock 没有mock
             result = this.invoker.invoke(invocation);
         } else if (value.startsWith("force")) {
             if (logger.isWarnEnabled()) {
                 logger.warn("force-mock: " + invocation.getMethodName() + " force-mock enabled , url : " + getUrl());
             }
-            //force:direct mock
+            //force:direct mock   force:直接mock
             result = doMockInvoke(invocation, null);
         } else {
-            //fail-mock
+            //fail-mock  调用服务失败后mock
             try {
+                // 调用远程服务
                 result = this.invoker.invoke(invocation);
 
                 //fix:#4585
-                if(result.getException() != null && result.getException() instanceof RpcException){
-                    RpcException rpcException= (RpcException)result.getException();
-                    if(rpcException.isBiz()){
-                        throw  rpcException;
-                    }else {
+                if (result.getException() != null && result.getException() instanceof RpcException) {
+                    RpcException rpcException = (RpcException) result.getException();
+                    if (rpcException.isBiz()) {
+                        throw rpcException;
+                    } else {
                         result = doMockInvoke(invocation, rpcException);
                     }
                 }
@@ -120,6 +121,7 @@ public class MockClusterInvoker<T> implements ClusterInvoker<T> {
                 if (logger.isWarnEnabled()) {
                     logger.warn("fail-mock: " + invocation.getMethodName() + " fail-mock enabled , url : " + getUrl(), e);
                 }
+                // 异常 调用mock
                 result = doMockInvoke(invocation, e);
             }
         }
@@ -160,6 +162,10 @@ public class MockClusterInvoker<T> implements ClusterInvoker<T> {
     }
 
     /**
+     * 返回MockInvoker
+     * Contract：
+     * 如果Constants.INVOCATION_NEED_MOCK 在调用中不存在或不为真，directory.list() 将返回一个普通调用者列表，否则返回一个模拟调用者列表。
+     * 如果 directory.list() 返回多个模拟调用程序，则只会使用其中之一。
      * Return MockInvoker
      * Contract：
      * directory.list() will return a list of normal invokers if Constants.INVOCATION_NEED_MOCK is absent or not true in invocation, otherwise, a list of mock invokers will return.
@@ -172,8 +178,10 @@ public class MockClusterInvoker<T> implements ClusterInvoker<T> {
         List<Invoker<T>> invokers = null;
         //TODO generic invoker？
         if (invocation instanceof RpcInvocation) {
+            //注意 隐式约定（虽然接口声明中添加了说明，但是扩展性是个问题。放置在附件中的做法有待改进）
             //Note the implicit contract (although the description is added to the interface declaration, but extensibility is a problem. The practice placed in the attachment needs to be improved)
             ((RpcInvocation) invocation).setAttachment(INVOCATION_NEED_MOCK, Boolean.TRUE.toString());
+            //如果调用中 Constants.INVOCATION_NEED_MOCK 不存在或不为真，目录将返回一个普通调用者列表，否则，将返回一个模拟调用者列表。
             //directory will return a list of normal invokers if Constants.INVOCATION_NEED_MOCK is absent or not true in invocation, otherwise, a list of mock invokers will return.
             try {
                 invokers = directory.list(invocation);

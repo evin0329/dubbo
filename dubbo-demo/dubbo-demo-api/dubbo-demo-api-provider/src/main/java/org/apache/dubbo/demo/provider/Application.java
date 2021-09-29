@@ -44,9 +44,12 @@ public class Application {
         service.setRef(new DemoServiceImpl());
 
         DubboBootstrap bootstrap = DubboBootstrap.getInstance();
+        ProviderConfig providerConfig = new ProviderConfig();
+        providerConfig.setPort(32432);
         bootstrap.application(new ApplicationConfig("dubbo-demo-api-provider"))
                 .registry(new RegistryConfig("nacos://127.0.0.1:8848"))
                 .service(service)
+                .provider(providerConfig)
                 .start()
                 .await();
     }

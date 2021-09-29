@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
+ * 此类从多个提供者中随机选择一个提供者。 您可以为每个提供者定义权重：如果权重都相同，那么它将使用 random.nextInt(number of invokers)。
+ * 如果权重不同，则使用 random.nextInt(w1 + w2 + ... + wn) 注意，如果机器的性能比其他机器好，则可以设置更大的权重。 如果性能不是很好，可以设置较小的权重
  * This class select one provider from multiple providers randomly.
  * You can define weights for each provider:
  * If the weights are all the same then it will use random.nextInt(number of invokers).
@@ -47,7 +49,7 @@ public class RandomLoadBalance extends AbstractLoadBalance {
     protected <T> Invoker<T> doSelect(List<Invoker<T>> invokers, URL url, Invocation invocation) {
         // Number of invokers
         int length = invokers.size();
-        // Every invoker has the same weight?
+        // Every invoker has the same weight? 每个调用者都有相同的权重？
         boolean sameWeight = true;
         // the maxWeight of every invokers, the minWeight = 0 or the maxWeight of the last invoker
         int[] weights = new int[length];
@@ -73,6 +75,7 @@ public class RandomLoadBalance extends AbstractLoadBalance {
                 }
             }
         }
+        // 如果所有调用者的权重值相同或 totalWeight=0，则均匀返回。
         // If all invokers have the same weight value or totalWeight=0, return evenly.
         return invokers.get(ThreadLocalRandom.current().nextInt(length));
     }

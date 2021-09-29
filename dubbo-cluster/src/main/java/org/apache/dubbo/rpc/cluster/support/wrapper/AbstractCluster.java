@@ -91,7 +91,7 @@ public abstract class AbstractCluster implements Cluster {
                 interceptor.before(next, invocation);
                 asyncResult = interceptor.intercept(next, invocation);
             } catch (Exception e) {
-                // onError callback
+                // onError callback 错误回调
                 if (interceptor instanceof ClusterInterceptor.Listener) {
                     ClusterInterceptor.Listener listener = (ClusterInterceptor.Listener) interceptor;
                     listener.onError(e, clusterInvoker, invocation);
@@ -101,7 +101,7 @@ public abstract class AbstractCluster implements Cluster {
                 interceptor.after(next, invocation);
             }
             return asyncResult.whenCompleteWithContext((r, t) -> {
-                // onResponse callback
+                // onResponse callback 响应回调
                 if (interceptor instanceof ClusterInterceptor.Listener) {
                     ClusterInterceptor.Listener listener = (ClusterInterceptor.Listener) interceptor;
                     if (t == null) {

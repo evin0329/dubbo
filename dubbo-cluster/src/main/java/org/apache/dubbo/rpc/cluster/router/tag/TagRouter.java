@@ -89,6 +89,7 @@ public class TagRouter extends AbstractRouter implements ConfigurationListener {
             return invokers;
         }
 
+        // 由于规则可以通过配置中心更改，我们应该复制一个使用。
         // since the rule can be changed by config center, we should copy one to use.
         final TagRouterRule tagRouterRuleCopy = tagRouterRule;
         if (tagRouterRuleCopy == null || !tagRouterRuleCopy.isValid() || !tagRouterRuleCopy.isEnabled()) {

@@ -66,7 +66,7 @@ public class Application {
         reference.setInterface(DemoService.class);
         reference.setCheck(false);
 //        reference.setMock("force:org.apache.dubbo.demo.consumer.DemoServiceMock");
-        reference.setMock("fail:org.apache.dubbo.demo.consumer.DemoServiceMock");
+//        reference.setMock("fail:org.apache.dubbo.demo.consumer.DemoServiceMock");
         DemoService service = reference.get();
         String message = service.sayHello("null");
         System.out.println(message);

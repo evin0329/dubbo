@@ -99,7 +99,7 @@ final public class MockInvoker<T> implements Invoker<T> {
         if (invocation instanceof RpcInvocation) {
             ((RpcInvocation) invocation).setInvoker(this);
         }
-
+        // 获取mock策略
         String mock = getUrl().getMethodParameter(invocation.getMethodName(),MOCK_KEY);
 
         if (StringUtils.isBlank(mock)) {
@@ -120,11 +120,11 @@ final public class MockInvoker<T> implements Invoker<T> {
             mock = mock.substring(THROW_PREFIX.length()).trim();
             if (StringUtils.isBlank(mock)) {
                 throw new RpcException("mocked exception for service degradation.");
-            } else { // user customized class
+            } else { // user customized class 用户自定义类
                 Throwable t = getThrowable(mock);
                 throw new RpcException(RpcException.BIZ_EXCEPTION, t);
             }
-        } else { //impl mock
+        } else { //impl mock mock实现
             try {
                 Invoker<T> invoker = getInvoker(mock);
                 return invoker.invoke(invocation);
@@ -163,6 +163,7 @@ final public class MockInvoker<T> implements Invoker<T> {
         }
 
         Class<T> serviceType = (Class<T>) ReflectUtils.forName(url.getServiceInterface());
+        // 获取mock对象
         T mockObject = (T) getMockObject(mockService, serviceType);
         invoker = PROXY_FACTORY.getInvoker(mockObject, serviceType, url);
         if (MOCK_MAP.size() < 10000) {
@@ -211,6 +212,13 @@ final public class MockInvoker<T> implements Invoker<T> {
 
 
     /**
+     * 规范化模拟字符串：
+     * 返回 => 返回空
+     * 失败 => 默认
+     * 强制 => 默认
+     * 失败：抛出/返回 foo => 抛出/返回 foo
+     * 强制：抛出/返回 foo => 抛出/返回 foo
+     *
      * Normalize mock string:
      *
      * <ol>

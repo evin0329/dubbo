@@ -207,6 +207,7 @@ public class NacosRegistry extends FailbackRegistry {
                     NacosInstanceManageUtil.initOrRefreshServiceInstanceList(serviceName, instances);
                     allCorrespondingInstanceList.addAll(instances);
                 }
+                // 通知订阅者
                 notifySubscriber(url, listener, allCorrespondingInstanceList);
                 for (String serviceName : serviceNames) {
                     subscribeEventListener(serviceName, url, listener);

@@ -298,7 +298,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
         removeFailedSubscribed(url, listener);
         try {
             // Sending a subscription request to the server side
-            // 向服务器端发送订阅请求
+            // 向服务器端(根据使用的注册中心协议)发送订阅请求
             doSubscribe(url, listener);
         } catch (Exception e) {
             Throwable t = e;
@@ -322,7 +322,7 @@ public abstract class FailbackRegistry extends AbstractRegistry {
                 }
             }
 
-            // Record a failed registration request to a failed list, retry regularly
+            // Record a failed registration request to a failed list, retry regularly 将失败的注册请求记录到失败列表中，定期重试
             addFailedSubscribed(url, listener);
         }
     }

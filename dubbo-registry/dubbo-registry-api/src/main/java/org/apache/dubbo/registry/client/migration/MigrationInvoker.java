@@ -39,6 +39,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static org.apache.dubbo.rpc.cluster.Constants.REFER_KEY;
 
+/**
+ * 迁移调用程序
+ * @param <T>
+ */
 public class MigrationInvoker<T> implements MigrationClusterInvoker<T> {
     private Logger logger = LoggerFactory.getLogger(MigrationInvoker.class);
 
@@ -163,6 +167,7 @@ public class MigrationInvoker<T> implements MigrationClusterInvoker<T> {
 
     @Override
     public Result invoke(Invocation invocation) throws RpcException {
+        // 检查调用者(服务发现调用者)是否可用
         if (!checkInvokerAvailable(serviceDiscoveryInvoker)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Using interface addresses to handle invocation, interface " + type.getName() + ", total address size " + (invoker.getDirectory().getAllInvokers() == null ? "is null" : invoker.getDirectory().getAllInvokers().size()));
@@ -170,6 +175,7 @@ public class MigrationInvoker<T> implements MigrationClusterInvoker<T> {
             return invoker.invoke(invocation);
         }
 
+        // 检查调用者是否可用
         if (!checkInvokerAvailable(invoker)) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Using instance addresses to handle invocation, interface " + type.getName() + ", total address size " + (serviceDiscoveryInvoker.getDirectory().getAllInvokers() == null ? " is null " : serviceDiscoveryInvoker.getDirectory().getAllInvokers().size()));
@@ -177,6 +183,7 @@ public class MigrationInvoker<T> implements MigrationClusterInvoker<T> {
             return serviceDiscoveryInvoker.invoke(invocation);
         }
 
+        // 使用当前可用调用者 调用
         return currentAvailableInvoker.invoke(invocation);
     }
 

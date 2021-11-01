@@ -102,8 +102,10 @@ public class ListenerRegistryWrapper implements Registry {
     @Override
     public void subscribe(URL url, NotifyListener listener) {
         try {
+            // 根据注册中心的协议 使用对应的注册中心订阅
             registry.subscribe(url, listener);
         } finally {
+            // 注册服务监听器
             if (CollectionUtils.isNotEmpty(listeners)) {
                 RuntimeException exception = null;
                 for (RegistryServiceListener registryListener : listeners) {

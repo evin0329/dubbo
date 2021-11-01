@@ -33,6 +33,7 @@ import java.util.concurrent.Executor;
 public interface EventDispatcher extends Listenable<EventListener<?>> {
 
     /**
+     * 实现为 调用Runnable的run方法
      * Direct {@link Executor} uses sequential execution model
      */
     Executor DIRECT_EXECUTOR = Runnable::run;

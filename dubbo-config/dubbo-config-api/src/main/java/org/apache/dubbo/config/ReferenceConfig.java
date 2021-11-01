@@ -314,6 +314,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         // 创建代理
         ref = createProxy(map);
 
+        // 服务元数据 设置目标类（代理类）
         serviceMetadata.setTarget(ref);
         serviceMetadata.addAttribute(PROXY_CLASS_REF, ref);
         ConsumerModel consumerModel = repository.lookupReferredService(serviceMetadata.getServiceKey());
@@ -322,6 +323,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
         initialized = true;
 
+        // 调用者可用检查
         checkInvokerAvailable();
 
         // dispatch a ReferenceConfigInitializedEvent since 2.7.4
@@ -419,14 +421,17 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         }
 
         URL consumerURL = new URL(CONSUMER_PROTOCOL, map.remove(REGISTER_IP_KEY), 0, map.get(INTERFACE_KEY), map);
+        // 发布服务订阅
         MetadataUtils.publishServiceDefinition(consumerURL);
 
-        // create service proxy
+        // create service proxy  创建服务代理   至此初始化完成
         return (T) PROXY_FACTORY.getProxy(invoker, ProtocolUtils.isGeneric(generic));
     }
 
     private void checkInvokerAvailable() throws IllegalStateException {
+        // 调用者是否应该检查  并且  调用者是否不可用
         if (shouldCheck() && !invoker.isAvailable()) {
+            // 需要检查 并且不可用
             invoker.destroy();
             throw new IllegalStateException("Failed to check the status of the service "
                     + interfaceName

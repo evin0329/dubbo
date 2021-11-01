@@ -412,7 +412,7 @@ public abstract class AbstractRegistry implements Registry {
         // keep every provider's category.
         Map<String, List<URL>> result = new HashMap<>();
         for (URL u : urls) {
-            if (UrlUtils.isMatch(url, u)) {
+            if (UrlUtils.isMatch(url, u)) {     // 又计算一次，什么意思？
                 String category = u.getParameter(CATEGORY_KEY, DEFAULT_CATEGORY);
                 List<URL> categoryList = result.computeIfAbsent(category, k -> new ArrayList<>());
                 categoryList.add(u);
@@ -429,6 +429,7 @@ public abstract class AbstractRegistry implements Registry {
             listener.notify(categoryList);
             // We will update our cache file after each notification.
             // When our Registry has a subscribe failure due to network jitter, we can return at least the existing cache URL.
+            // 我们将在每次通知后更新我们的缓存文件。当我们的 Registry 由于网络抖动而订阅失败时，我们至少可以返回现有的缓存 URL。
             saveProperties(url);
         }
     }

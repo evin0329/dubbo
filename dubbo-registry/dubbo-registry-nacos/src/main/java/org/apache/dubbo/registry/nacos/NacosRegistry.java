@@ -177,7 +177,7 @@ public class NacosRegistry extends FailbackRegistry {
     public void doSubscribe(final URL url, final NotifyListener listener) {
         Set<String> serviceNames = getServiceNames(url, listener);
 
-        //Set corresponding serviceNames for easy search later
+        //Set corresponding serviceNames for easy search later 设置对应的serviceNames，方便以后查找
         if (isServiceNamesWithCompatibleMode(url)) {
             for (String serviceName : serviceNames) {
                 NacosInstanceManageUtil.setCorrespondingServiceNames(serviceName, serviceNames);
@@ -189,6 +189,7 @@ public class NacosRegistry extends FailbackRegistry {
 
     private void doSubscribe(final URL url, final NotifyListener listener, final Set<String> serviceNames) {
         execute(namingService -> {
+            // 是具有兼容模式的服务名称
             if (isServiceNamesWithCompatibleMode(url)) {
                 List<Instance> allCorrespondingInstanceList = Lists.newArrayList();
 
@@ -202,9 +203,10 @@ public class NacosRegistry extends FailbackRegistry {
                  * in https://github.com/apache/dubbo/issues/5978
                  */
                 for (String serviceName : serviceNames) {
+                    // 注册中心获取实例列表
                     List<Instance> instances = namingService.getAllInstances(serviceName,
                             getUrl().getParameter(GROUP_KEY, Constants.DEFAULT_GROUP));
-                    NacosInstanceManageUtil.initOrRefreshServiceInstanceList(serviceName, instances);
+                    NacosInstanceManageUtil.initOrRefreshServiceInstanceList(serviceName, instances);       // 缓存?
                     allCorrespondingInstanceList.addAll(instances);
                 }
                 // 通知订阅者
@@ -470,6 +472,7 @@ public class NacosRegistry extends FailbackRegistry {
     }
 
     private List<URL> toUrlWithEmpty(URL consumerURL, Collection<Instance> instances) {
+        // 获取消费者url中匹配的实例列表
         List<URL> urls = buildURLs(consumerURL, instances);
         if (urls.size() == 0) {
             URL empty = URLBuilder.from(consumerURL)
@@ -513,6 +516,7 @@ public class NacosRegistry extends FailbackRegistry {
                 notifySubscriber(url, listener, instances);
             }
         };
+        // 从nacos服务注册中心订阅服务
         namingService.subscribe(serviceName,
                 getUrl().getParameter(GROUP_KEY, Constants.DEFAULT_GROUP),
                 eventListener);
@@ -528,9 +532,10 @@ public class NacosRegistry extends FailbackRegistry {
     private void notifySubscriber(URL url, NotifyListener listener, Collection<Instance> instances) {
         List<Instance> enabledInstances = new LinkedList<>(instances);
         if (enabledInstances.size() > 0) {
-            //  Instances
+            //  Instances   过滤启用的实例
             filterEnabledInstances(enabledInstances);
         }
+        // 获取符合的实例列表
         List<URL> urls = toUrlWithEmpty(url, enabledInstances);
         NacosRegistry.this.notify(url, listener, urls);
     }

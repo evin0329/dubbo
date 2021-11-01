@@ -524,7 +524,9 @@ public class RegistryProtocol implements Protocol {
             // 注册服务
             registry.register(directory.getRegisteredConsumerUrl());
         }
+        // 绑定路由链
         directory.buildRouterChain(urlToRegistry);
+        // 订阅服务
         directory.subscribe(toSubscribeUrl(urlToRegistry));
 
         return (ClusterInvoker<T>) cluster.join(directory);

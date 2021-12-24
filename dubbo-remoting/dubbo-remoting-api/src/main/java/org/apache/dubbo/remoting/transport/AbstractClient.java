@@ -170,6 +170,7 @@ public abstract class AbstractClient extends AbstractEndpoint implements Client 
 
     @Override
     public void send(Object message, boolean sent) throws RemotingException {
+        // 是否重新连接或连接已关闭
         if (needReconnect && !isConnected()) {
             connect();
         }

@@ -24,6 +24,8 @@ import org.apache.dubbo.config.utils.ReferenceConfigCache;
 import org.apache.dubbo.demo.DemoService;
 import org.apache.dubbo.rpc.service.GenericService;
 
+import java.util.concurrent.TimeUnit;
+
 public class Application {
     public static void main(String[] args) {
 //        if (isClassic(args)) {
@@ -68,8 +70,14 @@ public class Application {
 //        reference.setMock("force:org.apache.dubbo.demo.consumer.DemoServiceMock");
 //        reference.setMock("fail:org.apache.dubbo.demo.consumer.DemoServiceMock");
         DemoService service = reference.get();
-        String message = service.sayHello("null");
-        System.out.println(message);
+        while (true) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+            }
+            String message = service.sayHello("null");
+            System.out.println(message);
+        }
     }
     /**
      * Dubbo 的 mock 的策略总共分为两大类：

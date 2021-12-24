@@ -93,6 +93,7 @@ public class InvokerInvocationHandler implements InvocationHandler {
             rpcInvocation.put(Constants.METHOD_MODEL, consumerModel.getMethodModel(method));
         }
 
+        // 调用并创建结果
         return invoker.invoke(rpcInvocation).recreate();
     }
 }

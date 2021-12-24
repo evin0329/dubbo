@@ -311,7 +311,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
         serviceMetadata.getAttachments().putAll(map);
 
-        // 创建代理
+        // 创建代理对象
         ref = createProxy(map);
 
         // 服务元数据 设置目标类（代理类）
@@ -332,7 +332,7 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
 
     @SuppressWarnings({"unchecked", "rawtypes", "deprecation"})
     private T createProxy(Map<String, String> map) {
-        // 是否参考jvm引用
+        // 是否jvm引用
         if (shouldJvmRefer(map)) {
             URL url = new URL(LOCAL_PROTOCOL, LOCALHOST_VALUE, 0, interfaceClass.getName()).addParameters(map);
             invoker = REF_PROTOCOL.refer(interfaceClass, url);
@@ -465,12 +465,15 @@ public class ReferenceConfig<T> extends ReferenceConfigBase<T> {
         configInitializers.forEach(e -> e.initReferConfig(this));
 
         this.refresh();
+        // 非通用接口
         if (getGeneric() == null && getConsumer() != null) {
             setGeneric(getConsumer().getGeneric());
         }
         if (ProtocolUtils.isGeneric(generic)) {
+            // 通用接口
             interfaceClass = GenericService.class;
         } else {
+            // 获取具体接口Class
             try {
                 interfaceClass = Class.forName(interfaceName, true, Thread.currentThread()
                         .getContextClassLoader());

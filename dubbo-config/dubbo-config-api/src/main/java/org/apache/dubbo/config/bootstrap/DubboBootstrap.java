@@ -303,6 +303,7 @@ public class DubboBootstrap {
     }
 
     /**
+     * 添加RegistryConfig的实例
      * Add an instance of {@link RegistryConfig}
      *
      * @param registryConfig an instance of {@link RegistryConfig}
@@ -516,6 +517,7 @@ public class DubboBootstrap {
             return;
         }
 
+        // 初始化框架扩展
         ApplicationModel.initFrameworkExts();
 
         startConfigCenter();
@@ -594,6 +596,7 @@ public class DubboBootstrap {
 
     private void startConfigCenter() {
 
+        //如有必要，使用注册表作为配置中心
         useRegistryAsConfigCenterIfNecessary();
 
         Collection<ConfigCenterConfig> configCenters = configManager.getConfigCenters();
@@ -649,12 +652,14 @@ public class DubboBootstrap {
     }
 
     /**
+     * 出于兼容性目的，当没有明确指定配置中心并且 registryConfig 的 useAsConfigCenter 为 null 或 true 时，使用 registry 作为默认配置中心
      * For compatibility purpose, use registry as the default config center when
      * there's no config center specified explicitly and
      * useAsConfigCenter of registryConfig is null or true
      */
     private void useRegistryAsConfigCenterIfNecessary() {
         // we use the loading status of DynamicConfiguration to decide whether ConfigCenter has been initiated.
+        // 我们通过 DynamicConfiguration 的加载状态来判断 ConfigCenter 是否已经启动。
         if (environment.getDynamicConfiguration().isPresent()) {
             return;
         }

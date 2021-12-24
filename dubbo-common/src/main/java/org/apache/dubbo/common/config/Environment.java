@@ -108,6 +108,8 @@ public class Environment extends LifecycleAdapter implements FrameworkExt {
     }
 
     /**
+     * 启动时，Dubbo 由各种配置驱动，如Application、Registry、Protocol 等，所有的配置都会汇聚成一个数据总线——URL，进而驱动后续的流程。
+     * 目前配置源有很多，包括AbstractConfig（API、XML、annotation）、-D、config center等，这个方法帮助我们从各种配置源中筛选出最优先的值。
      * At start-up, Dubbo is driven by various configuration, such as Application, Registry, Protocol, etc.
      * All configurations will be converged into a data bus - URL, and then drive the subsequent process.
      * <p>
@@ -121,8 +123,8 @@ public class Environment extends LifecycleAdapter implements FrameworkExt {
         CompositeConfiguration prefixedConfiguration = new CompositeConfiguration(config.getPrefix(), config.getId());
         Configuration configuration = new ConfigConfigurationAdapter(config);
         if (this.isConfigCenterFirst()) {
-            // The sequence would be: SystemConfiguration -> AppExternalConfiguration -> ExternalConfiguration -> AbstractConfig -> PropertiesConfiguration
-            // Config center has the highest priority
+            // The sequence would be 顺序是: SystemConfiguration -> AppExternalConfiguration -> ExternalConfiguration -> AbstractConfig -> PropertiesConfiguration
+            // Config center has the highest priority 配置中心具有最高优先级
             prefixedConfiguration.addConfiguration(systemConfiguration);
             prefixedConfiguration.addConfiguration(environmentConfiguration);
             prefixedConfiguration.addConfiguration(appExternalConfiguration);
@@ -130,8 +132,8 @@ public class Environment extends LifecycleAdapter implements FrameworkExt {
             prefixedConfiguration.addConfiguration(configuration);
             prefixedConfiguration.addConfiguration(propertiesConfiguration);
         } else {
-            // The sequence would be: SystemConfiguration -> AbstractConfig -> AppExternalConfiguration -> ExternalConfiguration -> PropertiesConfiguration
-            // Config center has the highest priority
+            // The sequence would be 顺序是: SystemConfiguration -> AbstractConfig -> AppExternalConfiguration -> ExternalConfiguration -> PropertiesConfiguration
+            // Config center has the highest priority 配置中心具有最高优先级
             prefixedConfiguration.addConfiguration(systemConfiguration);
             prefixedConfiguration.addConfiguration(environmentConfiguration);
             prefixedConfiguration.addConfiguration(configuration);

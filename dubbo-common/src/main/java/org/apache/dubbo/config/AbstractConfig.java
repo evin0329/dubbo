@@ -471,7 +471,7 @@ public abstract class AbstractConfig implements Serializable {
         Environment env = ApplicationModel.getEnvironment();
         try {
             CompositeConfiguration compositeConfiguration = env.getPrefixedConfiguration(this);
-            // loop methods, get override value and set the new value back to method
+            // loop methods, get override value and set the new value back to method 循环方法，获取覆盖值并将新值设置回方法
             Method[] methods = getClass().getMethods();
             for (Method method : methods) {
                 // set前缀方法
@@ -487,6 +487,7 @@ public abstract class AbstractConfig implements Serializable {
                                 this.getClass().getSimpleName() +
                                 ", please make sure every property has getter/setter method provided.");
                     }
+                    // setParameters 设置器
                 } else if (isParametersSetter(method)) {
                     String value = StringUtils.trim(compositeConfiguration.getString(extractPropertyName(getClass(), method)));
                     if (StringUtils.isNotEmpty(value)) {
